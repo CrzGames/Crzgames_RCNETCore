@@ -2,6 +2,7 @@
 
 // JWT-C++ Library
 #include <jwt-cpp/jwt.h>
+#include <picojson/picojson.h>
 
 // Standard C Libraries
 #include <stdlib.h>
