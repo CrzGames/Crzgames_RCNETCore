@@ -30,6 +30,31 @@ RCNET_Callbacks callbacksServerEngine = {
 };
 
 /**
+ * \brief Initialise la bibliothèque OpenSSL avec options de log.
+ * 
+ * Cette fonction appelle OPENSSL_init_ssl() avec les options standards de chargement
+ * des chaînes d’erreur et d’algorithmes. Elle loggue et quitte le programme si 
+ * l’initialisation échoue.
+ * 
+ * \return true si l'initialisation a réussi, false sinon.
+ *
+ * \since Cette fonction est disponible depuis RC2D 1.0.0.
+ */
+static bool rcnet_engine_initOpenssl(void) 
+{
+    if (OPENSSL_init_ssl(OPENSSL_INIT_LOAD_SSL_STRINGS | OPENSSL_INIT_LOAD_CRYPTO_STRINGS, NULL) == 0)
+    {
+        rcnet_logger_log(RCNET_LOG_ERROR, "Erreur lors de l'initialisation d'OpenSSL : %s", ERR_error_string(ERR_get_error(), NULL));
+        return false;
+    }
+    else 
+    {
+        rcnet_logger_log(RCNET_LOG_INFO, "OpenSSL initialisé avec succès.");
+        return true;
+    }
+}
+
+/**
  * \brief Obtient le temps actuel en nanosecondes.
  * 
  * Cette fonction utilise `clock_gettime` pour obtenir le temps actuel
@@ -56,10 +81,11 @@ static void rcnet_engine_setCallbacks(RCNET_Callbacks* callbacksUser)
 
 static bool rcnet_engine(void)
 {
-    // Lib OpenSSL Initialize
-    SSL_library_init();
-    SSL_load_error_strings();
-    OpenSSL_add_all_algorithms();
+    // Initialize OpenSSL
+    if (!rcnet_engine_initOpenssl())
+    {
+        return false;
+    }
 
     // Initialize tickDuration
     tickDuration = 1000000000 / tickRate;
