@@ -115,7 +115,7 @@ target_link_libraries(${PROJECT_NAME}
   ${OPENSSL_CRYPTO_LIBRARY}
   hiredis::hiredis
   hiredis::hiredis_ssl
-  nats::nats_static
+  nats_static
 )
 
 if(RCNET_BUILD_EXAMPLE)
@@ -147,7 +147,7 @@ if(RCNET_BUILD_EXAMPLE)
     ${OPENSSL_CRYPTO_LIBRARY}
     hiredis::hiredis
     hiredis::hiredis_ssl
-    nats::nats_static
+    nats_static
     ${PROJECT_NAME}
   )
 endif()
