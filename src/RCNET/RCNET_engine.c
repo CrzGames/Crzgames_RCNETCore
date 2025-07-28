@@ -98,12 +98,14 @@ static void rcnet_engine_serverloop(unsigned long* last_time)
 static bool rcnet_engine_init(void)
 {
 	// Init ServeEngine house
-	if (rcnet_engine() != 0)
+	if (!rcnet_engine())
     {
 		return false;
     }
-
-	return true;
+    else
+    {
+        return true;
+    }
 }
 
 static void rcnet_engine_quit(void)
