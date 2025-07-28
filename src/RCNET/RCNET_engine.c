@@ -45,27 +45,6 @@ static unsigned long rcnet_engine_getCurrentTimeNs(void)
     return spec.tv_sec * 1000000000 + spec.tv_nsec; // Convert to nanoseconds
 }
 
-/**
- * @brief Définit la priorité du processus pour améliorer la stabilité et les performances du serveur.
- * 
- * Cette fonction utilise `sched_setscheduler` pour définir la priorité du processus à son maximum
- * avec la politique de planification `SCHED_FIFO` en temps réel.
- * 
- * @details
- * - **Priorité du processus** : En définissant une priorité élevée, nous réduisons les interruptions par
- *   d'autres processus, ce qui est crucial pour les applications sensibles au temps comme les serveurs de jeu.
- */
-static void rcnet_engine_setProcessPriority(void)
-{
-    // Définir la priorité du processus à la plus élevée en utilisant SCHED_FIFO
-    struct sched_param param;
-    param.sched_priority = sched_get_priority_max(SCHED_FIFO);
-    if (sched_setscheduler(0, SCHED_FIFO, &param) != 0)
-    {
-        perror("Echec de la definition de la priorite du processus");
-    }
-}
-
 // Set Callbacks Engine by User
 static void rcnet_engine_setCallbacks(RCNET_Callbacks* callbacksUser) 
 {
@@ -84,9 +63,6 @@ static bool rcnet_engine(void)
 
     // Initialize tickDuration
     tickDuration = 1000000000 / tickRate;
-
-    // Set Process Priority
-    rcnet_engine_setProcessPriority();
 
 	return true;
 }
