@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: ubuntu-latest
+          - platform: ubuntu-22.04
             target: linux
             generator: Unix Makefiles
             arch: x86_64
@@ -24,12 +24,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: true
-          token: ${{ secrets.PAT }}
 
       - name: Configure project with CMake and Run build - Linux
-        if: matrix.target == 'linux'
         uses: threeal/cmake-action@v2.0.0
         with:
           run-build: true
@@ -40,7 +36,6 @@ jobs:
           options: CMAKE_BUILD_TYPE=Release
 
       - name: Archive librcnet artifacts - Linux
-        if: matrix.target == 'linux'
         uses: actions/upload-artifact@v4
         with:
           name: librcnet-${{ matrix.target }}-${{ matrix.arch }}
