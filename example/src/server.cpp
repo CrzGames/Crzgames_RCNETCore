@@ -36,7 +36,7 @@ void rcnet_unload(void)
 void rcnet_load(void)
 {
     // Initialize NATS client
-    rcnet_nats_initialize(&client, "tls://staging.nats.tcp.crzcommon.com:4222", NULL, NULL, NULL, true, "UDXU4RCSJNZOIQHZNWXHXORDPRTGNJAHAHFRGZNEEJCPQTT2M7NLCNF4", "SUACSSL3UAHUDXKFSNVUZRF5UHPMWZ6BFDTJ7M6USDXIEDNPPQYYYCU3VY");
+    rcnet_nats_initialize(&client, "tls://staging.nats.tcp.crzcommon.com:4222", NULL, NULL, NULL, true, "UDXU4RCSJNZOIQHZNWXHXORDPRTGNJAHAHFRGZNEEJCPQTT2M7NLCNF4", (const void*)"SUACSSL3UAHUDXKFSNVUZRF5UHPMWZ6BFDTJ7M6USDXIEDNPPQYYYCU3VY");
 
     // Check and create JetStream stream if it doesn't exist
     const char *subjects[] = { "aaaa.test", "aaaa.toto" };
