@@ -57,6 +57,32 @@ set(ENABLE_NUGET OFF CACHE BOOL "" FORCE)            # Pas besoin de nuget
 # Ajouter hiredis en tant que sous-répertoire
 add_subdirectory(dependencies/hiredis EXCLUDE_FROM_ALL)
 
+# Ne pas construire les modules vidéo, audio, etc.
+set(SDL_VIDEO OFF CACHE BOOL "" FORCE)
+set(SDL_AUDIO OFF CACHE BOOL "" FORCE)
+set(SDL_RENDER OFF CACHE BOOL "" FORCE)
+set(SDL_JOYSTICK OFF CACHE BOOL "" FORCE)
+set(SDL_HAPTIC OFF CACHE BOOL "" FORCE)
+set(SDL_SENSOR OFF CACHE BOOL "" FORCE)
+set(SDL_POWER OFF CACHE BOOL "" FORCE)
+set(SDL_EVENTS OFF CACHE BOOL "" FORCE)
+set(SDL_TIMERS ON CACHE BOOL "" FORCE)      # Garde les timers utiles pour un serveur
+set(SDL_THREADS ON CACHE BOOL "" FORCE)     # Très utile sur un serveur
+
+# Désactiver les sous-backends inutiles
+set(SDL_WAYLAND OFF CACHE BOOL "" FORCE)
+set(SDL_X11 OFF CACHE BOOL "" FORCE)
+set(SDL_PIPEWIRE OFF CACHE BOOL "" FORCE)
+set(SDL_PULSEAUDIO OFF CACHE BOOL "" FORCE)
+set(SDL_ALSA OFF CACHE BOOL "" FORCE)
+set(SDL_OPENGL OFF CACHE BOOL "" FORCE)
+set(SDL_OPENGLES OFF CACHE BOOL "" FORCE)
+set(SDL_VULKAN OFF CACHE BOOL "" FORCE)
+
+# Désactiver les tests et les exemples
+set(SDL_TESTS OFF CACHE BOOL "" FORCE)
+set(SDL_EXAMPLES OFF CACHE BOOL "" FORCE)
+
 # Ajouter SDL3 en tant que sous-répertoire
 add_subdirectory(dependencies/SDL EXCLUDE_FROM_ALL)
 
