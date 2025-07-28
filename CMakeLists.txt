@@ -1,11 +1,11 @@
 # Version minimale de CMake requise
 cmake_minimum_required(VERSION 3.25.0)
 
-project(rcnet)
+project(rcnet LANGUAGES CXX))
 
-# Spécifier la version C standard
-set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_STANDARD_REQUIRED True)
+# Spécifier la version C++ du projet
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Configuration des drapeaux du compilateur
 # -Wall : Active tous les avertissements de base
@@ -14,7 +14,7 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 # -Wno-unused-parameter : Désactive les avertissements pour les paramètres de fonction non utilisés
 # -Wno-error=strict-prototypes : Désactive les erreurs pour les prototypes de fonction stricts
 # -Wno-newline-eof : Désactive les avertissements pour les nouvelles lignes à la fin du fichier
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -pedantic -Wno-unused-parameter -Wno-error=strict-prototypes -Wno-newline-eof")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Wno-unused-parameter -Wno-error=strict-prototypes -Wno-newline-eof")
 
 # Option pour construire l'exécutable d'exemple
 option(RCNET_BUILD_EXAMPLE "Build the example executable" ON)
@@ -30,10 +30,27 @@ set(CRZGAMES_LIBRARIES_PATH "${DEPENDENCIES_PATH}/Crzgames_Libraries")
 find_library(OPENSSL_CRYPTO_LIBRARY NAMES crypto REQUIRED PATHS "${CRZGAMES_LIBRARIES_PATH}/linux/lib/OpenSSL/x64" NO_DEFAULT_PATH)
 find_library(OPENSSL_LIBRARY NAMES ssl REQUIRED PATHS "${CRZGAMES_LIBRARIES_PATH}/linux/lib/OpenSSL/x64" NO_DEFAULT_PATH)
 
+# Ajoute nlohmann_json en tant que sous-répertoire
+add_subdirectory(dependencies/nlohmann_json)
+
+# Désactiver ce dont tu n'as pas besoin
+set(JWT_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(JWT_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(JWT_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(JWT_ENABLE_COVERAGE OFF CACHE BOOL "" FORCE)
+set(JWT_ENABLE_FUZZING OFF CACHE BOOL "" FORCE)
+# Désactiver les autres implémentations JSON
+set(JWT_DISABLE_PICOJSON ON CACHE BOOL "" FORCE)
+set(JWT_EXTERNAL_PICOJSON OFF CACHE BOOL "" FORCE)
+# Activer la recherche de nlohmann/json
+set(JWT_EXTERNAL_NLOHMANN_JSON ON CACHE BOOL "" FORCE)
+# Forcer OpenSSL
+set(JWT_SSL_LIBRARY "OpenSSL" CACHE STRING "" FORCE)
+add_subdirectory(dependencies/jwt-cpp EXCLUDE_FROM_ALL)
+
 # NATS options
 set(NATS_BUILD_OPENSSL_STATIC_LIBS ON CACHE BOOL "" FORCE)
 set(NATS_BUILD_STREAMING OFF CACHE BOOL "" FORCE)  # Déprécié, maintenant on utilise JetStreaming
-
 # Ajouter NATS en tant que sous-répertoire
 add_subdirectory(dependencies/Nats EXCLUDE_FROM_ALL)
 
@@ -43,7 +60,6 @@ set(ENABLE_SSL ON CACHE BOOL "" FORCE)               # Pour activer hiredis_ssl
 set(DISABLE_TESTS ON CACHE BOOL "" FORCE)            # Pas besoin des tests
 set(ENABLE_EXAMPLES OFF CACHE BOOL "" FORCE)         # Pas besoin des exemples
 set(ENABLE_NUGET OFF CACHE BOOL "" FORCE)            # Pas besoin de nuget
-
 # Ajouter hiredis en tant que sous-répertoire
 add_subdirectory(dependencies/hiredis EXCLUDE_FROM_ALL)
 
@@ -58,7 +74,6 @@ set(SDL_POWER OFF CACHE BOOL "" FORCE)
 set(SDL_EVENTS OFF CACHE BOOL "" FORCE)
 set(SDL_TIMERS ON CACHE BOOL "" FORCE)      # Garde les timers utiles pour un serveur
 set(SDL_THREADS ON CACHE BOOL "" FORCE)     # Très utile sur un serveur
-
 # Désactiver les sous-backends inutiles
 set(SDL_WAYLAND OFF CACHE BOOL "" FORCE)
 set(SDL_X11 OFF CACHE BOOL "" FORCE)
@@ -68,14 +83,11 @@ set(SDL_ALSA OFF CACHE BOOL "" FORCE)
 set(SDL_OPENGL OFF CACHE BOOL "" FORCE)
 set(SDL_OPENGLES OFF CACHE BOOL "" FORCE)
 set(SDL_VULKAN OFF CACHE BOOL "" FORCE)
-
 # Désactiver les tests et les exemples
 set(SDL_TESTS OFF CACHE BOOL "" FORCE)
 set(SDL_EXAMPLES OFF CACHE BOOL "" FORCE)
-
 # Ne pas faire d’erreur si aucun backend GUI n’est présent
 set(SDL_UNIX_CONSOLE_BUILD ON CACHE BOOL "" FORCE)
-
 # Ajouter SDL3 en tant que sous-répertoire
 add_subdirectory(dependencies/SDL EXCLUDE_FROM_ALL)
 
@@ -94,7 +106,7 @@ add_library(${PROJECT_NAME}
 )
 
 # Définir des flags de compilation pour le mode Release (NDEBUG = No Debug, donc Release)
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG")
 
 # Ajouter les fichiers include du serveur de jeu
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -103,8 +115,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
   "${CRZGAMES_LIBRARIES_PATH}/linux/include"
   "${DEPENDENCIES_PATH}/Nats/src/include"
   "${DEPENDENCIES_PATH}/Nats/src"
-  "${DEPENDENCIES_PATH}/hiredis"
-  "${DEPENDENCIES_PATH}/hiredis/adapters"
 )
 
 # Link les librairies
@@ -115,6 +125,8 @@ target_link_libraries(${PROJECT_NAME}
   hiredis::hiredis
   hiredis::hiredis_ssl
   nats_static
+  jwt-cpp::jwt-cpp
+  nlohmann_json::nlohmann_json
 )
 
 if(RCNET_BUILD_EXAMPLE)
@@ -133,8 +145,6 @@ if(RCNET_BUILD_EXAMPLE)
     "${CRZGAMES_LIBRARIES_PATH}/linux/include"
     "${DEPENDENCIES_PATH}/Nats/src/include"
     "${DEPENDENCIES_PATH}/Nats/src"
-    "${DEPENDENCIES_PATH}/hiredis"
-    "${DEPENDENCIES_PATH}/hiredis/adapters"
     "${PROJECT_SOURCE_DIR}/example/include"
   )
 
@@ -146,6 +156,8 @@ if(RCNET_BUILD_EXAMPLE)
     hiredis::hiredis
     hiredis::hiredis_ssl
     nats_static
+    jwt-cpp::jwt-cpp
+    nlohmann_json::nlohmann_json
     ${PROJECT_NAME}
   )
 endif()
