@@ -89,9 +89,10 @@ char* rcnet_jwt_base64Decode(const char* input)
     if (!input) return NULL;
 
     try {
-        auto decoded = jwt::base::decode(input);
+        auto decoded = jwt::base::decode<std::string>(std::string(input));
         return strdup(decoded.c_str());
     } catch (...) {
         return NULL;
     }
 }
+
