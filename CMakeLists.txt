@@ -29,7 +29,6 @@ set(CRZGAMES_LIBRARIES_PATH "${DEPENDENCIES_PATH}/Crzgames_Libraries")
 # Get libraries : CrzGames_Libraries (librairies précompilées qui n'utilise pas CMake)
 find_library(OPENSSL_CRYPTO_LIBRARY NAMES crypto REQUIRED PATHS "${CRZGAMES_LIBRARIES_PATH}/linux/lib/OpenSSL/x64" NO_DEFAULT_PATH)
 find_library(OPENSSL_LIBRARY NAMES ssl REQUIRED PATHS "${CRZGAMES_LIBRARIES_PATH}/linux/lib/OpenSSL/x64" NO_DEFAULT_PATH)
-find_library(PROTOBUFC_LIBRARY NAMES protobuf-c REQUIRED PATHS "${CRZGAMES_LIBRARIES_PATH}/linux/lib/protobuf-c/x64" NO_DEFAULT_PATH)
 
 # NATS options
 set(NATS_BUILD_OPENSSL_STATIC_LIBS ON CACHE BOOL "" FORCE)
