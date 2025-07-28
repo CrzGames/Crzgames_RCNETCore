@@ -161,5 +161,5 @@ bool rcnet_engine_run(RCNET_Callbacks* callbacksUser, int tickRate)
     // FreeMemory ServerEngine and Quit Program.
     rcnet_engine_quit();
 
-	return 0;
+	return true;
 }
