@@ -1,7 +1,7 @@
 # Version minimale de CMake requise
 cmake_minimum_required(VERSION 3.25.0)
 
-project(rcnet LANGUAGES CXX)
+project(rcnet LANGUAGES C CXX)
 
 # Spécifier la version C++ du projet
 set(CMAKE_CXX_STANDARD 11)
