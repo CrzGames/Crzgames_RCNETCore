@@ -1,9 +1,11 @@
 #include <jwt-cpp/jwt.h>
+#include <iostream>
 
-jwt::jwt_object create_jwt(const std::string& secret, const std::string& issuer, const std::string& subject) {
-    return jwt::create()
-        .set_issuer(issuer)
-        .set_subject(subject)
-        .set_type("JWT")
-        .sign(jwt::algorithm::hs256{secret});
+void test(void)
+{
+    std::string const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXUyJ9.eyJpc3MiOiJhdXRoMCIsInNhbXBsZSI6InRlc3QifQ.lQm3N2bVlqt2-1L-FsOjtR6uE-L4E9zJutMWKIe1v1M";
+    auto decoded = jwt::decode(token);
+
+    for(auto& e : decoded.get_payload_json())
+        std::cout << e.first << " = " << e.second << '\n';
 }
