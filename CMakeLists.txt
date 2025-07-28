@@ -93,7 +93,7 @@ add_subdirectory(dependencies/SDL EXCLUDE_FROM_ALL)
 
 # Ajouter les fichiers sources du server de jeu ainsi que les librairies aes, lz4 et monocypher.
 file(GLOB_RECURSE SOURCES 
-  "${PROJECT_SOURCE_DIR}/src/RCNET/*.c"
+  "${PROJECT_SOURCE_DIR}/src/RCNET/*.cpp"
   "${PROJECT_SOURCE_DIR}/src/external/monocypher/*.c"
   "${PROJECT_SOURCE_DIR}/src/external/aes/*.c"
   "${PROJECT_SOURCE_DIR}/src/external/lz4/*.c"
@@ -132,7 +132,7 @@ target_link_libraries(${PROJECT_NAME}
 if(RCNET_BUILD_EXAMPLE)
   # Ajouter le fichier source pour l'exécutable de test
   file(GLOB_RECURSE EXAMPLE_SOURCES 
-    "${PROJECT_SOURCE_DIR}/example/src/*.c"
+    "${PROJECT_SOURCE_DIR}/example/src/*.cpp"
   )
 
   # Créer l'exécutable de test
