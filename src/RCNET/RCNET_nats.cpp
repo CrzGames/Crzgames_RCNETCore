@@ -170,7 +170,7 @@ int rcnet_nats_subscribe(RCNET_NATSClient *client, const char *subject, natsMsgH
     }
 
     // Redimensionner le tableau d'abonnements
-    natsSubscription **newSubscriptions = realloc(client->subscriptions, (client->subscriptionCount + 1) * sizeof(natsSubscription*));
+    natsSubscription **newSubscriptions = (natsSubscription **)realloc(client->subscriptions, (client->subscriptionCount + 1) * sizeof(natsSubscription*));
     if (newSubscriptions == NULL) {
         rcnet_logger_log(RCNET_LOG_ERROR, "Failed to allocate memory for new subscription\n");
         natsSubscription_Destroy(newSubscription);
@@ -244,7 +244,7 @@ int rcnet_nats_jetstream_subscribe(RCNET_NATSClient *client, const char *subject
     }
 
     // Redimensionner le tableau d'abonnements
-    natsSubscription **newSubscriptions = realloc(client->subscriptions, (client->subscriptionCount + 1) * sizeof(natsSubscription*));
+    natsSubscription **newSubscriptions = (natsSubscription **)realloc(client->subscriptions, (client->subscriptionCount + 1) * sizeof(natsSubscription*));
     if (newSubscriptions == NULL) {
         rcnet_logger_log(RCNET_LOG_ERROR, "Failed to allocate memory for new subscription\n");
         natsSubscription_Destroy(newSubscription);
