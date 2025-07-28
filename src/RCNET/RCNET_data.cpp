@@ -58,7 +58,7 @@ static RCNET_EncodedData* hex_encode(const unsigned char* data, size_t sizeData,
     size_t extraChar = (dataType == RCNET_DATA_TYPE_TEXT) ? 1 : 0; // +1 pour le caractère nul si c'est du texte
 
     // Allouer de l'espace pour la chaîne hexadécimale avec ou sans caractère nul supplémentaire
-    char* hex = malloc(sizeData * 2 + extraChar);
+    char* hex = (char*)malloc(sizeData * 2 + extraChar);
     if (hex == NULL) 
     {
         return NULL; // Échec de l'allocation mémoire
@@ -76,7 +76,7 @@ static RCNET_EncodedData* hex_encode(const unsigned char* data, size_t sizeData,
         hex[sizeData * 2] = '\0'; // Assure la compatibilité avec les chaînes C pour les données textuelles
     }
 
-    RCNET_EncodedData* encodedData = malloc(sizeof(RCNET_EncodedData));
+    RCNET_EncodedData* encodedData = (RCNET_EncodedData*)malloc(sizeof(RCNET_EncodedData));
     if (encodedData == NULL) 
     {
         free(hex); // Assurez-vous de libérer hex si l'allocation de encodedData échoue
@@ -106,7 +106,7 @@ static unsigned char* hex_decode(const char* hex, RCNET_DataType dataType)
     // Allouer de l'espace supplémentaire pour le caractère nul uniquement si c'est du texte
     size_t extraChar = (dataType == RCNET_DATA_TYPE_TEXT) ? 1 : 0;
 
-    unsigned char* plain = malloc(len + extraChar);
+    unsigned char* plain = (unsigned char*)malloc(len + extraChar);
     if (plain == NULL) 
     {
         return NULL; // Gestion de l'échec de l'allocation mémoire
@@ -991,7 +991,7 @@ unsigned char* rcnet_data_decrypt(const RCNET_EncryptedData* encryptedData)
         // Ajout d'un caractère nul à la fin si les données sont de type texte
         if (encryptedData->dataType == RCNET_DATA_TYPE_TEXT) 
         {
-            plaintext = realloc(plaintext, plaintext_len + 1); // Ajustement pour le caractère nul
+            plaintext = (unsigned char*)realloc(plaintext, plaintext_len + 1); // Ajustement pour le caractère nul
             if (!plaintext) 
             {
                 rcnet_logger_log(RCNET_LOG_ERROR, "Échec de l'allocation mémoire pour le caractère nul dans rcnet_data_decrypt().\n");
