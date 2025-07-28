@@ -33,6 +33,7 @@ find_library(PROTOBUFC_LIBRARY NAMES protobuf-c REQUIRED PATHS "${CRZGAMES_LIBRA
 
 # NATS options
 set(NATS_BUILD_OPENSSL_STATIC_LIBS ON CACHE BOOL "" FORCE)
+set(NATS_BUILD_STREAMING OFF CACHE BOOL "" FORCE)  # Déprécié, maintenant on utilise JetStreaming
 
 # Ajouter NATS en tant que sous-répertoire
 add_subdirectory(dependencies/Nats EXCLUDE_FROM_ALL)
@@ -110,7 +111,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 # Link les librairies
 target_link_libraries(${PROJECT_NAME}
   SDL3::SDL3
-  ${PROTOBUFC_LIBRARY}
   ${OPENSSL_LIBRARY}
   ${OPENSSL_CRYPTO_LIBRARY}
   hiredis::hiredis
@@ -142,7 +142,6 @@ if(RCNET_BUILD_EXAMPLE)
   # Link les librairies
   target_link_libraries(rcnet_example
     SDL3::SDL3
-    ${PROTOBUFC_LIBRARY}
     ${OPENSSL_LIBRARY}
     ${OPENSSL_CRYPTO_LIBRARY}
     hiredis::hiredis
