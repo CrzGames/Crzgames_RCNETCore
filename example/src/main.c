@@ -19,5 +19,5 @@ int main(int argc, char* argv[])
     myServerCallbacks.rcnet_load = rcnet_load;
     myServerCallbacks.rcnet_update = rcnet_update;
 
-    return rcnet_run(&myServerCallbacks, 60);
+    return rcnet_engine_run(&myServerCallbacks, 60);
 }

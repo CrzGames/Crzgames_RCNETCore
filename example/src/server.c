@@ -1,8 +1,8 @@
 #include "server.h"
 
 // Include necessary headers
-#include <RCNET/nats.h>
-#include <RCNET/logger.h>
+#include <RCNET/RCNET_nats.h>
+#include <RCNET/RCNET_logger.h>
 
 // Standard C libraries
 #include <stdbool.h>
