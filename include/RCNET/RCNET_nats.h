@@ -1,7 +1,7 @@
 #ifndef RCNET_NATS_H
 #define RCNET_NATS_H
 
-#include <nats/nats.h>
+#include <nats.h>
 
 // Standard C libraries
 #include <stdbool.h>
