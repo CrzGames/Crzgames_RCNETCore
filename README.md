@@ -1,8 +1,8 @@
 # Crzgames - RCNETCore
 
 ## 🛠 Tech Stack
-- C (Language)
-- A C99 compiler
+- C++ (Language)
+- A C++ 11 compiler
 - CI / CD (Github Actions)
 - CMake (Build script)
 - Compiler (GCC)
