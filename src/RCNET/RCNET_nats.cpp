@@ -62,7 +62,7 @@ int rcnet_nats_initialize(RCNET_NATSClient *client, const char *natsServerURL, c
     }
 
     // Set the NKey authentication
-    status = natsOptions_SetNKey(opts, publicKeyNKey, customSignatureHandler, (void *)privateKeySeedNKey);
+    status = natsOptions_SetNKey(opts, publicKeyNKey, customSignatureHandler, privateKeySeedNKey);
     if (status != NATS_OK) {
         rcnet_logger_log(RCNET_LOG_ERROR, "Failed to set NKey options: %s\n", natsStatus_GetText(status));
         natsOptions_Destroy(opts);
