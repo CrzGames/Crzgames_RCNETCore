@@ -1,5 +1,9 @@
 #include <jwt-cpp/jwt.h>
+#include <nlohmann/json.hpp>
+#include <jwt-cpp/traits/nlohmann-json/traits.h>
 #include <iostream>
+
+using namespace jwt::traits;
 
 void test(void)
 {
