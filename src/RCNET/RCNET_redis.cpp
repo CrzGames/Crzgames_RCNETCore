@@ -1,5 +1,5 @@
-#include <hiredis/hiredis.h>
-#include <hiredis/hiredis_ssl.h>
+#include <hiredis.h>
+#include <hiredis_ssl.h>
 
 void test(void)
 {

@@ -110,6 +110,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
   "${CRZGAMES_LIBRARIES_PATH}/linux/include"
   "${DEPENDENCIES_PATH}/Nats/src/include"
   "${DEPENDENCIES_PATH}/Nats/src"
+  "${DEPENDENCIES_PATH}/hiredis/"
 )
 
 # Link les librairies
@@ -140,6 +141,7 @@ if(RCNET_BUILD_EXAMPLE)
     "${CRZGAMES_LIBRARIES_PATH}/linux/include"
     "${DEPENDENCIES_PATH}/Nats/src/include"
     "${DEPENDENCIES_PATH}/Nats/src"
+    "${DEPENDENCIES_PATH}/hiredis/"
     "${PROJECT_SOURCE_DIR}/example/include"
   )
 
