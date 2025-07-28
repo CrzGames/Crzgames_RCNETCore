@@ -1,0 +1,106 @@
+name: Generate RCNET library static (production)
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  discussions: write
+
+jobs:
+  build_librcnet:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: ubuntu-latest
+            target: linux
+            generator: Unix Makefiles
+            arch: x86_64
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.PAT }}
+
+      - name: Configure project with CMake and Run build - Linux
+        if: matrix.target == 'linux'
+        uses: threeal/cmake-action@v2.0.0
+        with:
+          run-build: true
+          build-dir: build-${{ matrix.target }}-${{ matrix.arch }}
+          generator: ${{ matrix.generator }}
+          c-compiler: gcc
+          cxx-compiler: g++
+          options: CMAKE_BUILD_TYPE=Release
+
+      - name: Archive librcnet artifacts - Linux
+        if: matrix.target == 'linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: librcnet-${{ matrix.target }}-${{ matrix.arch }}
+          retention-days: 1
+          path: |
+            build-${{ matrix.target }}-${{ matrix.arch }}/*.a
+
+  deploy_assets_github:
+    needs: build_librcnet
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Organize Artifacts
+        run: |
+          mkdir -p linux/x86_64/
+          mv librcnet-linux-x86_64/*.a linux/x86_64/
+          tar -czvf linux.tar.gz linux/
+          tar -czvf include.tar.gz include/rcnet
+
+      - name: Deploy assets library - Release Github
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            linux.tar.gz
+            include.tar.gz
+
+  build_deploy_website:
+    needs: deploy_assets_github
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js latest LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./docs
+
+      - name: Build with VitePress
+        run: npm run build
+        working-directory: ./docs
+
+      - name: Deploy files website static for docs API RCNETCore
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.O2SWITCH_FTP_HOST }}
+          username: ${{ secrets.O2SWITCH_FTP_USERNAME }}
+          password: ${{ secrets.O2SWITCH_FTP_PASSWORD }}
+          port: ${{ secrets.O2SWITCH_FTP_PORT }}
+          protocol: ftp
+          local-dir: ./docs/.vitepress/dist/
+          server-dir: librcnet.crzcommon2.com/
+          exclude: |
+            dist

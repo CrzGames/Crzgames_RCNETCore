@@ -1,0 +1,9 @@
+# IDE files
+.idea
+.vscode
+.vs
+
+# Build files
+/dist/
+
+/dependencies/
