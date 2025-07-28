@@ -38,7 +38,7 @@ RCNET_Callbacks callbacksServerEngine = {
  * 
  * \return true si l'initialisation a réussi, false sinon.
  *
- * \since Cette fonction est disponible depuis RC2D 1.0.0.
+ * \since Cette fonction est disponible depuis RCNET 1.0.0.
  */
 static bool rcnet_engine_initOpenssl(void) 
 {
