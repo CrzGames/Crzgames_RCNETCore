@@ -84,7 +84,7 @@ set(SDL_TESTS OFF CACHE BOOL "" FORCE)
 set(SDL_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 # Ne pas faire d’erreur si aucun backend GUI n’est présent
-set(SDL_REQUIRE_X11_WAYLAND FALSE CACHE BOOL "" FORCE)
+set(SDL_UNIX_CONSOLE_BUILD ON CACHE BOOL "" FORCE)
 
 # Ajouter SDL3 en tant que sous-répertoire
 add_subdirectory(dependencies/SDL EXCLUDE_FROM_ALL)
