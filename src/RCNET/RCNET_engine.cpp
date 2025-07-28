@@ -8,9 +8,7 @@
 // Standard C Libraries
 #include <time.h>
 #include <stdbool.h>
-
-// POSIX Libraries
-#include <pthread.h> // For setting thread priority
+#include <pthread.h>
 
 // ServerLoop
 static bool serverIsRunning = true;
@@ -36,7 +34,7 @@ RCNET_Callbacks callbacksServerEngine = {
  * des chaînes d’erreur et d’algorithmes. Elle loggue et quitte le programme si 
  * l’initialisation échoue.
  * 
- * \return true si l'initialisation a réussi, false sinon.
+ * \return {bool} - true si l'initialisation réussit, false sinon
  *
  * \since Cette fonction est disponible depuis RCNET 1.0.0.
  */
@@ -52,6 +50,34 @@ static bool rcnet_engine_initOpenssl(void)
         rcnet_logger_log(RCNET_LOG_INFO, "OpenSSL initialisé avec succès.");
         return true;
     }
+}
+
+static bool rcnet_engine_initClientJWT(void)
+{
+    const char* keyJWTBase64 = getenv("SEATYRANTS_PUBLIC_KEY_JWT_BASE64");
+    if (!keyJWTBase64) 
+    {
+        rcnet_logger_log(RCNET_LOG_ERROR, "Variable d environnement SEATYRANTS_PUBLIC_KEY_JWT_BASE64 manquante.");
+        return false;
+    }
+
+    char* pemKey = rcnet_jwt_base64Decode(keyJWTBase64);
+    if (!pemKey) 
+    {
+        rcnet_logger_log(RCNET_LOG_ERROR, "Erreur: décodage base64 de la cle publique (SEATYRANTS_PUBLIC_KEY_JWT_BASE64) echoue.");
+        return false;
+    }
+
+    if (!rcnet_jwt_clientInit(pemKey, "SeaTyrants_WebSite_BackEnd")) 
+    {
+        rcnet_logger_log(RCNET_LOG_ERROR, "Erreur: initialisation du client JWT.");
+        free(pemKey);
+        return false;
+    }
+
+    free(pemKey);
+    rcnet_logger_log(RCNET_LOG_INFO, "Client JWT initialiser avec succes.");
+    return true;
 }
 
 /**
@@ -83,6 +109,12 @@ static bool rcnet_engine(void)
 {
     // Initialize OpenSSL
     if (!rcnet_engine_initOpenssl())
+    {
+        return false;
+    }
+
+    // Initialize JWT Client
+    if (!rcnet_engine_initClientJWT())
     {
         return false;
     }
@@ -139,6 +171,9 @@ static void rcnet_engine_quit(void)
     // Lib OpenSSL Deinitialize
     ERR_free_strings();
     EVP_cleanup();
+    CRYPTO_cleanup_all_ex_data();
+    SSL_COMP_free_compression_methods();
+    SSL_CTX_free(NULL);
 }
 
 void rcnet_engine_eventQuit(void)
@@ -161,7 +196,7 @@ bool rcnet_engine_run(RCNET_Callbacks* callbacksUser, int tickRate)
     }
 
     // Init GameEngine RCNET
-	if(rcnet_engine_init() != true)
+	if(!rcnet_engine_init())
     {
 		rcnet_engine_quit();
         return false;

@@ -1,11 +1,96 @@
+#include "RCNET/RCNET_jwt.h"
+
+// JWT-C++ Library
 #include <jwt-cpp/jwt.h>
-#include <iostream>
 
-void test(void)
+// Standard C Libraries
+#include <stdlib.h>
+#include <string.h>
+#include <string>
+#include <variant>
+
+/**
+ * Clé publique JWT pour la vérification des tokens.
+ */
+static std::string SEATYRANTS_PUBLIC_KEY_JWT;
+
+/**
+ * Issuer attendu pour les tokens JWT.
+ */
+static std::string SEATYRANTS_ISSUER_JWT;
+
+bool rcnet_jwt_clientInit(const char* public_key_pem, const char* issuer) 
 {
-    std::string const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXUyJ9.eyJpc3MiOiJhdXRoMCIsInNhbXBsZSI6InRlc3QifQ.lQm3N2bVlqt2-1L-FsOjtR6uE-L4E9zJutMWKIe1v1M";
-    auto decoded = jwt::decode(token);
+    if (!public_key_pem || !issuer) return false;
 
-    for(auto& e : decoded.get_payload_json())
-        std::cout << e.first << " = " << e.second << '\n';
+    SEATYRANTS_PUBLIC_KEY_JWT = public_key_pem;
+    SEATYRANTS_ISSUER_JWT = issuer;
+
+    return true;
+}
+
+bool rcnet_jwt_clientVerify(const char* token) 
+{
+    if (!token) return false;
+
+    try {
+        auto decoded = jwt::decode(token);
+        auto verifier = jwt::verify()
+            .allow_algorithm(jwt::algorithm::rs512(SEATYRANTS_PUBLIC_KEY_JWT))
+            .with_issuer(SEATYRANTS_ISSUER_JWT)
+            .with_type("JWT");
+
+        verifier.verify(decoded);
+        return true;
+    } catch (...) {
+        return false;
+    }
+}
+
+char* rcnet_jwt_clientGetClaim(const char* token, const char* claim_name) 
+{
+    if (!token || !claim_name) return NULL;
+
+    try {
+        auto decoded = jwt::decode(token);
+        auto json = decoded.get_payload_json();
+
+        auto it = json.find(claim_name);
+        if (it == json.end()) return NULL;
+
+        // Convert to string regardless of type
+        std::string result;
+        if (it->second.is<std::string>()) 
+        {
+            result = it->second.get<std::string>();
+        } 
+        else if (it->second.is<double>()) 
+        {
+            result = std::to_string(it->second.get<double>());
+        } 
+        else if (it->second.is<bool>()) 
+        {
+            result = it->second.get<bool>() ? "true" : "false";
+        } 
+        else 
+        {
+            return NULL;
+        }
+
+        return strdup(result.c_str());
+    } catch (...) {
+        return NULL;
+    }
+}
+
+char* rcnet_jwt_base64Decode(const char* input) 
+{
+    if (!input) return NULL;
+
+    try {
+        auto decoded = jwt::base::decode<std::string>(input);
+        return strdup(decoded.c_str());
+    } catch (...) {
+        return NULL;
+    }
 }
