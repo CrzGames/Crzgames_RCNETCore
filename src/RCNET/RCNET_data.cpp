@@ -156,7 +156,7 @@ static RCNET_EncodedData* base64_encode(const unsigned char* data, size_t sizeDa
     size_t output_len = 4 * ((sizeData + 2) / 3);
 
     // Adjust allocation for null-termination based on data type
-    char* cipher = malloc(output_len + (dataType == RCNET_DATA_TYPE_TEXT ? 1 : 0)); 
+    char* cipher = (char*)malloc(output_len + (dataType == RCNET_DATA_TYPE_TEXT ? 1 : 0)); 
     if (cipher == NULL) 
     {
         return NULL; // Memory allocation failed
@@ -192,7 +192,7 @@ static RCNET_EncodedData* base64_encode(const unsigned char* data, size_t sizeDa
     }
 
     // Allocate memory for the encoded data structure
-    RCNET_EncodedData* encodedData = malloc(sizeof(RCNET_EncodedData));
+    RCNET_EncodedData* encodedData = (RCNET_EncodedData*)malloc(sizeof(RCNET_EncodedData));
     if (!encodedData) 
     {
         free(cipher);
@@ -234,7 +234,7 @@ static unsigned char* base64_decode(const char* cipher, RCNET_DataType dataType)
     if (cipher[input_len - 2] == '=') output_len--;
 
     // Allouer avec ou sans espace supplémentaire pour le caractère nul selon le dataType
-    unsigned char* plain = malloc(output_len + (dataType == RCNET_DATA_TYPE_TEXT ? 1 : 0));
+    unsigned char* plain = (unsigned char*)malloc(output_len + (dataType == RCNET_DATA_TYPE_TEXT ? 1 : 0));
     if (plain == NULL) 
     {
         return NULL;
@@ -494,7 +494,7 @@ static char* to_hex(unsigned char* hash, size_t size)
         return NULL; // Invalid input
     }
 
-    char* output = malloc((size * 2) + 1);
+    char* output = (char*)malloc((size * 2) + 1);
     for (size_t i = 0; i < size; i++) 
     {
         sprintf(output + (i * 2), "%02x", hash[i]);
@@ -843,7 +843,7 @@ RCNET_EncryptedData* rcnet_data_encrypt(const unsigned char* data, size_t dataSi
         }
 
         // Allocation et chiffrement
-        unsigned char* ciphertext = malloc(dataSize + EVP_CIPHER_block_size(cipher)); // Prévoir espace pour le bloc de padding
+        unsigned char* ciphertext = (unsigned char*)malloc(dataSize + EVP_CIPHER_block_size(cipher)); // Prévoir espace pour le bloc de padding
         if (!ciphertext) 
         {
             rcnet_logger_log(RCNET_LOG_ERROR, "Échec de l'allocation mémoire pour le ciphertext dans rcnet_data_encrypt().\n");
@@ -861,7 +861,7 @@ RCNET_EncryptedData* rcnet_data_encrypt(const unsigned char* data, size_t dataSi
 
         // Combinaison du sel, de l'IV et du ciphertext
         size_t totalSize = sizeof(salt) + sizeof(iv) + ciphertext_len;
-        unsigned char* encryptedData = malloc(totalSize);
+        unsigned char* encryptedData = (unsigned char*)malloc(totalSize);
         if (!encryptedData) 
         {
             rcnet_logger_log(RCNET_LOG_ERROR, "Échec de l'allocation mémoire pour les données chiffrées dans rcnet_data_encrypt().\n");
@@ -878,7 +878,7 @@ RCNET_EncryptedData* rcnet_data_encrypt(const unsigned char* data, size_t dataSi
         free(ciphertext);
 
         // Création de la structure RCNET_EncryptedData
-        RCNET_EncryptedData* encryptedDataStruct = malloc(sizeof(RCNET_EncryptedData));
+        RCNET_EncryptedData* encryptedDataStruct = (RCNET_EncryptedData*)malloc(sizeof(RCNET_EncryptedData));
         if (!encryptedDataStruct) 
         {
             rcnet_logger_log(RCNET_LOG_ERROR, "Échec de l'allocation mémoire pour la structure RCNET_EncryptedData dans rcnet_data_encrypt().\n");
@@ -899,7 +899,7 @@ RCNET_EncryptedData* rcnet_data_encrypt(const unsigned char* data, size_t dataSi
         }
 
         // Stockez le HMAC dans la structure
-        encryptedDataStruct->hmac = malloc(hmac_len);
+        encryptedDataStruct->hmac = (unsigned char*)malloc(hmac_len);
         if (encryptedDataStruct->hmac == NULL) 
         {
             rcnet_logger_log(RCNET_LOG_ERROR, "Échec de l'allocation mémoire pour le HMAC dans rcnet_data_encrypt().\n");
@@ -972,7 +972,7 @@ unsigned char* rcnet_data_decrypt(const RCNET_EncryptedData* encryptedData)
         }
 
         // Allocation pour le plaintext
-        unsigned char* plaintext = malloc(ciphertext_len); // L'espace nécessaire pourrait être légèrement supérieur à `ciphertext_len`
+        unsigned char* plaintext = (unsigned char*)malloc(ciphertext_len); // L'espace nécessaire pourrait être légèrement supérieur à `ciphertext_len`
         if (!plaintext) 
         {
             rcnet_logger_log(RCNET_LOG_ERROR, "Échec de l'allocation mémoire pour le plaintext dans rcnet_data_decrypt().\n");
