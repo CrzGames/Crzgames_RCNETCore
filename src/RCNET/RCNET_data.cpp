@@ -913,7 +913,7 @@ RCNET_EncryptedData* rcnet_data_encrypt(const unsigned char* data, size_t dataSi
 
         // Stockez les données dans la structure :
         encryptedDataStruct->data = encryptedData;      // Données chiffrées (sel + IV + ciphertext)
-        encryptedDataStruct->passphrase = passphrase;   // La gestion de la passphrase devrait être effectuée de manière sécurisée
+        encryptedDataStruct->passphrase = strdup(passphrase);   // La gestion de la passphrase devrait être effectuée de manière sécurisée
         encryptedDataStruct->originalSize = dataSize;   // Taille des données avant chiffrement
         encryptedDataStruct->encryptedSize = totalSize; // Inclut sel, IV et ciphertext
         encryptedDataStruct->cipherFormat = format;     // Format de chiffrement utilisé
