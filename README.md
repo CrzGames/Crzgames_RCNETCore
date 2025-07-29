@@ -130,6 +130,7 @@ git commit --allow-empty -m "chore: release 1.1.0-rc.0" -m "Release-As: 1.1.0-rc
     sudo apt-get install -y build-essential &&
     brew install gcc
   5. Download and Install CMake >= 3.25.0 : brew install cmake
+  6. Run command for install dependencies : cmake -P cmake/setup_dependencies.cmake
   ```
   
 <br /><br /><br /><br />
