@@ -20,7 +20,6 @@ int main(int argc, char* argv[])
     myServerCallbacks.rcnet_update = rcnet_update;
 
     bool success = rcnet_engine_run(&myServerCallbacks, 60);
-
     if (!success) 
     {
         rcnet_logger_log(RCNET_LOG_ERROR, "Failed to start the engine\n");

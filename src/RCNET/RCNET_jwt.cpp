@@ -12,6 +12,7 @@
 #include <string.h>
 #include <string>
 #include <variant>
+#include <algorithm>
 
 /**
  * Clé publique JWT pour la vérification des tokens (RS512).
@@ -25,6 +26,31 @@ static std::string SEATYRANTS_PUBLIC_KEY_JWT;
  * Cette valeur est utilisée pour vérifier l'émetteur du token lors de la validation.
  */
 static std::string SEATYRANTS_ISSUER_JWT;
+
+// Nettoie une chaîne PEM pour ne conserver que la partie Base64
+static std::string clean_pem_to_base64(const std::string& pem) 
+{
+    std::string result = pem;
+
+    // Supprimer les en-têtes et pieds de page PEM
+    const std::string begin_marker = "-----BEGIN PUBLIC KEY-----";
+    const std::string end_marker = "-----END PUBLIC KEY-----";
+    size_t begin_pos = result.find(begin_marker);
+    if (begin_pos != std::string::npos) {
+        result.erase(begin_pos, begin_marker.length());
+    }
+    size_t end_pos = result.find(end_marker);
+    if (end_pos != std::string::npos) {
+        result.erase(end_pos, end_marker.length());
+    }
+
+    // Supprimer les retours à la ligne et espaces
+    result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
+    result.erase(std::remove(result.begin(), result.end(), '\r'), result.end());
+    result.erase(std::remove(result.begin(), result.end(), ' '), result.end());
+
+    return result;
+}
 
 bool rcnet_jwt_clientInit(const char* public_key_pem, const char* issuer) 
 {
@@ -95,11 +121,19 @@ char* rcnet_jwt_base64Decode(const char* input)
     if (!input) return nullptr;
     
     try {
-        // utilise la fonction de la lib vendored
-        std::string decoded = base64::from_base64(input);
-        // strdup alloue une copie C-string
+        // Nettoyer la chaîne PEM pour obtenir uniquement la partie Base64
+        std::string cleaned_input = clean_pem_to_base64(input);
+        if (cleaned_input.empty()) 
+        {
+            rcnet_logger_log(RCNET_LOG_ERROR, "Erreur : la chaîne Base64 nettoyée est vide.");
+            return nullptr;
+        }
+
+        // Décoder la chaîne Base64 nettoyée
+        std::string decoded = base64::from_base64(cleaned_input);
         return strdup(decoded.c_str());
-    } catch (...) {
+    } catch (const std::exception& e) {
+        rcnet_logger_log(RCNET_LOG_ERROR, "Exception lors du décodage Base64 : %s", e.what());
         return nullptr;
     }
 }
