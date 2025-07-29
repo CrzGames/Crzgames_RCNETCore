@@ -45,10 +45,16 @@ static std::string clean_pem_to_base64(const std::string& pem)
         result.erase(end_pos, end_marker.length());
     }
 
-    // Supprimer les retours à la ligne et espaces
-    result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
-    result.erase(std::remove(result.begin(), result.end(), '\r'), result.end());
-    result.erase(std::remove(result.begin(), result.end(), ' '), result.end());
+    // Supprimer les retours à la ligne, espaces et autres caractères non Base64
+    result.erase(std::remove_if(result.begin(), result.end(), 
+        [](char c) { return c == '\n' || c == '\r' || c == ' ' || c == '\t'; }), 
+        result.end());
+
+    // Ajouter des caractères de remplissage '=' si nécessaire
+    size_t len = result.length();
+    if (len % 4 != 0) {
+        result.append(4 - (len % 4), '=');
+    }
 
     return result;
 }
