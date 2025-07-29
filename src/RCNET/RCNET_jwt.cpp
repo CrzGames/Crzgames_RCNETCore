@@ -1,4 +1,5 @@
 #include "RCNET/RCNET_jwt.h"
+#include "RCNET/RCNET_logger.h"
 
 // JWT-C++ Library
 #include <jwt-cpp/jwt.h>
