@@ -114,7 +114,7 @@ git commit --allow-empty -m "chore: release 1.1.0-rc.0" -m "Release-As: 1.1.0-rc
 ## ⚙️ Setup Environment
 1. Clone project :
   ```bash
-  git clone git@github.com:CrzGames/Crzgames_RCNETCore.git
+  git clone git@github.com:CrzGames/Crzgames_RCNET.git
   ```
 2. (optional just for documentation rcnet) Download and Install Node.js >= 18.0.0
 3. Run command :
