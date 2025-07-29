@@ -2,7 +2,7 @@
 
 ## 🛠 Tech Stack
 - C++ (Language)
-- A C++ 11 compiler
+- A C++ 17 compiler
 - CI / CD (Github Actions)
 - CMake (Build script)
 - Compiler (GCC)
@@ -31,7 +31,7 @@ git commit --allow-empty -m "chore: release 1.1.0-rc.0" -m "Release-As: 1.1.0-rc
 ## 📁 Project Structure
 
 ```
-📦 Crzgames_RC2DCore
+📦 Crzgames_RCNETCore
 ├── 📁 .github                        # Configuration GitHub (workflows CI/CD)
 ├── 📁 build-scripts                  # Scripts de build, puis les scripts utilise le CMakelists.txt
 ├── 📁 cmake                          
@@ -41,7 +41,9 @@ git commit --allow-empty -m "chore: release 1.1.0-rc.0" -m "Release-As: 1.1.0-rc
 │   ├── 📁 Crzgames_ValveGameNetworkingSockets # Librairie réseau UDP (fork)
 │   ├── 📁 SDL                        # SDL3 
 │   ├── 📁 hiredis                    # Redis
-│   ├── 📁 NATS                       # Nats broker de message
+│   ├── 📁 Nats                       # Nats broker de message
+│   ├── 📁 jwt-cpp                    # Nats broker de message
+│   ├── 📁 nlohmann_json              # Nats broker de message
 ├── 📁 docs                           # Documentation du moteur de serveur (pages Markdown, auto-générées)
 ├── 📁 example                        # Exemples d’utilisation du moteur de serveur de jeu RCNET (projets de démo, test de fonctionnalités)
 ├── 📁 include                        # En-têtes publics exposés aux utilisateurs de la lib (API du moteur de serveur)
@@ -110,7 +112,7 @@ git commit --allow-empty -m "chore: release 1.1.0-rc.0" -m "Release-As: 1.1.0-rc
 
 
 ## ⚙️ Setup Environment
-1. Clone project and get recursive submodules :
+1. Clone project :
   ```bash
   git clone git@github.com:CrzGames/Crzgames_RCNETCore.git
   ```
