@@ -148,9 +148,7 @@ cmake -P cmake/setup_dependencies.cmake
 
 
 ## 🔄 Cycle Development
-1. Open favorite IDE.
-2. Edit or add files in 'src' or 'include' folder
-3. Generate example executable
+1. Générer l'exemple pour tester l'executable
 ```bash
 chmod +x ./build-scripts/generate-example/linux.sh
 ./build-scripts/generate-example/linux.sh
@@ -172,16 +170,16 @@ chmod +x ./build-scripts/generate-example/linux.sh
 <br /><br />
 
 ### ✋ Manual Distribution Process
-1. Generate librarie RCNETCore for Release and Debug, run command :
+1. Generate librarie RCNET for Release and Debug, run command :
 ```bash
 # Linux
 chmod +x ./build-scripts/generate-lib/linux.sh
 ./build-scripts/generate-lib/linux.sh
 ```
-2. Get librarie RCNETCore, steps for different systems :
+2. Get librarie RCNET, steps for different systems :
 ```bash
 # Linux
 1. Go directory 'dist/lib/linux/'
 2. Go in directory 'Release' OR 'Debug'
-3. Get librarie RCNETCore : librcnet.a
+3. Get librarie RCNET : librcnet.a
 ```
