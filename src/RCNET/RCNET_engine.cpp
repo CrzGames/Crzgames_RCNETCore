@@ -144,11 +144,11 @@ static bool rcnet_engine(void)
         return false;
     }
 
-    // Initialize JWT Client
-    if (!rcnet_engine_initClientJWT())
+    // FIXME: Initialize JWT Client
+    /*if (!rcnet_engine_initClientJWT())
     {
         return false;
-    }
+    }*/
 
     // Initialize tickDuration & fixedDeltaTime
     tickDuration = 1000000000 / tickRate;
