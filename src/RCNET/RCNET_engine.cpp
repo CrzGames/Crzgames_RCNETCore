@@ -1,15 +1,15 @@
 #include "RCNET/RCNET.h"
 
-// Dependencies Libraries
+// Dependencies Libraries OpenSSL
 #include <openssl/ssl.h>
 #include <openssl/bio.h>
 #include <openssl/err.h>
 
 // Standard C Libraries
-#include <time.h>
 #include <stdbool.h>
-#include <pthread.h>
 #include <cstdlib>  // Required for : getenv
+#include <chrono>
+using namespace std::chrono;
 
 // ServerLoop
 static bool serverIsRunning = true;
@@ -92,9 +92,8 @@ static bool rcnet_engine_initClientJWT(void)
  */
 static unsigned long rcnet_engine_getCurrentTimeNs(void)
 {
-    struct timespec spec;
-    clock_gettime(CLOCK_MONOTONIC, &spec);
-    return spec.tv_sec * 1000000000 + spec.tv_nsec; // Convert to nanoseconds
+    auto now = steady_clock::now();
+    return duration_cast<nanoseconds>(now.time_since_epoch()).count();
 }
 
 // Set Callbacks Engine by User
@@ -157,14 +156,7 @@ static void rcnet_engine_serverloop(unsigned long* last_time)
 static bool rcnet_engine_init(void)
 {
 	// Init ServeEngine house
-	if (!rcnet_engine())
-    {
-		return false;
-    }
-    else
-    {
-        return true;
-    }
+	return rcnet_engine();
 }
 
 static void rcnet_engine_quit(void)
@@ -174,7 +166,6 @@ static void rcnet_engine_quit(void)
     EVP_cleanup();
     CRYPTO_cleanup_all_ex_data();
     SSL_COMP_free_compression_methods();
-    SSL_CTX_free(NULL);
 }
 
 void rcnet_engine_eventQuit(void)
@@ -193,7 +184,8 @@ bool rcnet_engine_run(RCNET_Callbacks* callbacksUser, int tickRate)
     // Set TickRate
     if (tickRate > 0)
     {
-        tickRate = tickRate;
+        ::tickRate = tickRate;
+        tickDuration = 1000000000 / ::tickRate;
     }
 
     // Init GameEngine RCNET
