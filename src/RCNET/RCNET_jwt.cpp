@@ -11,12 +11,15 @@
 #include <variant>
 
 /**
- * Clé publique JWT pour la vérification des tokens.
+ * Clé publique JWT pour la vérification des tokens (RS512).
+ * Cette clé est utilisée pour valider les signatures des tokens JWT.
+ * Elle est chargée depuis la variable d'environnement SEATYRANTS_PUBLIC_KEY_JWT_BASE64.
  */
 static std::string SEATYRANTS_PUBLIC_KEY_JWT;
 
 /**
  * Issuer attendu pour les tokens JWT.
+ * Cette valeur est utilisée pour vérifier l'émetteur du token lors de la validation.
  */
 static std::string SEATYRANTS_ISSUER_JWT;
 
