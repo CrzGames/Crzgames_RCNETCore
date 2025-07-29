@@ -7,3 +7,4 @@ Nats=https://github.com/nats-io/nats.c.git:v3.10.1
 hiredis=https://github.com/redis/hiredis.git:v1.3.0
 jwt-cpp=https://github.com/Thalhammer/jwt-cpp.git:v0.7.1
 nlohmann_json=https://github.com/nlohmann/json.git:v3.12.0
+cpp-httplib=https://github.com/yhirose/cpp-httplib.git:v0.23.1

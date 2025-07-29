@@ -101,13 +101,15 @@ add_library(${PROJECT_NAME}
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG")
 
 # Ajouter les fichiers include du serveur de jeu
-target_include_directories(${PROJECT_NAME} PRIVATE
+target_include_directories(${PROJECT_NAME} PUBLIC
   "${PROJECT_SOURCE_DIR}/include"
   "${PROJECT_SOURCE_DIR}/include/external"
   "${CRZGAMES_LIBRARIES_PATH}/linux/include"
   "${DEPENDENCIES_PATH}/Nats/src/include"
   "${DEPENDENCIES_PATH}/Nats/src"
   "${DEPENDENCIES_PATH}/hiredis/"
+  "${DEPENDENCIES_PATH}/nlohmann_json/include"
+  "${DEPENDENCIES_PATH}/cpp-httplib"
 )
 
 # Link les librairies
