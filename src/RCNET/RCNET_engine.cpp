@@ -9,6 +9,7 @@
 #include <time.h>
 #include <stdbool.h>
 #include <pthread.h>
+#include <cstdlib>  // Required for : getenv
 
 // ServerLoop
 static bool serverIsRunning = true;

@@ -19,9 +19,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Wno-unused-para
 # Option pour construire l'exécutable d'exemple
 option(RCNET_BUILD_EXAMPLE "Build the example executable" ON)
 
-# Ajouter le chemin des modules CMake pour les dépendances
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/libjwt/cmake")
-
 # Chemin vers les dépendances
 set(DEPENDENCIES_PATH "${PROJECT_SOURCE_DIR}/dependencies")
 set(CRZGAMES_LIBRARIES_PATH "${DEPENDENCIES_PATH}/Crzgames_Libraries")
