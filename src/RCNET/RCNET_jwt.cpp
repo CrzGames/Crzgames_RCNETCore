@@ -4,6 +4,9 @@
 #include <jwt-cpp/jwt.h>
 #include <picojson/picojson.h>
 
+// Base64 Library
+#include "base64/base64.hpp"
+
 // Standard C Libraries
 #include <stdlib.h>
 #include <string.h>
@@ -89,6 +92,14 @@ char* rcnet_jwt_clientGetClaim(const char* token, const char* claim_name)
 
 char* rcnet_jwt_base64Decode(const char* input) 
 {
-    return NULL;
+    if (!input) return nullptr;
+    
+    try {
+        // utilise la fonction de la lib vendored
+        std::string decoded = base64::from_base64(input);
+        // strdup alloue une copie C-string
+        return strdup(decoded.c_str());
+    } catch (...) {
+        return nullptr;
+    }
 }
-
