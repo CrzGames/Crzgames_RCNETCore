@@ -23,8 +23,27 @@ int rcnet_nats_initialize(RCNET_NATSClient *client, const char *natsServerURL, c
 
     // Créer les options NATS
     status = natsOptions_Create(&opts);
-    if (status != NATS_OK) {
+    if (status != NATS_OK) 
+    {
         rcnet_logger_log(RCNET_LOG_ERROR, "Failed to create NATS options: %s\n", natsStatus_GetText(status));
+        return -1;
+    }
+
+    // Set Ping interval to 20 seconds (20,000 milliseconds)
+    status = natsOptions_SetPingInterval(opts, 20000);
+    if (status != NATS_OK) 
+    {
+        rcnet_logger_log(RCNET_LOG_ERROR, "Failed to set Ping interval: %s\n", natsStatus_GetText(status));
+        natsOptions_Destroy(opts);
+        return -1;
+    }
+
+    // Set the limit to 5
+    status = natsOptions_SetMaxPingsOut(opts, 5);
+    if (status != NATS_OK) 
+    {
+        rcnet_logger_log(RCNET_LOG_ERROR, "Failed to set Max Pings Out: %s\n", natsStatus_GetText(status));
+        natsOptions_Destroy(opts);
         return -1;
     }
 
